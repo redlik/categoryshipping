@@ -24,16 +24,36 @@ class CategoryShipping extends Module
 
     public function install()
     {
-        return parent::install() && $this->registerHook('displayHome');
+        return parent::install() && $this->createShippingTable();
     }
 
     public function uninstall()
     {
-        return parent::uninstall();
+        return parent::uninstall() && $this->deleteTable();
     }
 
-    public function hookDisplayHome($params)
+    public function createShippingTable()
     {
-        return "This is my freaking module!";
+        /* Adding extra column for shipping rate */
+        Db::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'category` ADD `id_my_shipping_rate` INT(11) UNSIGNED DEFAULT 0');
+
+        $query = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'category_shipping` (
+        `id_data` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) NOT NULL,
+        `machine_name` varchar(255) NOT NULL,
+        `rate` int(11) NOT NULL,
+        `created_at` datetime NOT NULL,
+        PRIMARY KEY (`id_data`)
+        ) ENGINE='. _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+
+        return Db::getInstance()->execute($query);
+    }
+
+    public function deleteTable()
+    {
+        DB::getInstance()->execute('ALTER TABLE `' . _DB_PREFIX_ . 'category` DROP COLUMN `id_my_shipping_rate`');
+
+        $query = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'category_shipping`';
+        return Db::getInstance()->execute($query);
     }
 }
