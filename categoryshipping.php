@@ -4,8 +4,19 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+include_once(_PS_MODULE_DIR_ . 'categoryshipping/classes/ShippingClass.php');
+
 class CategoryShipping extends Module
 {
+
+    public $tabs = [
+        [
+            'name' => 'Shipping Classes', // Menu label
+            'class_name' => 'AdminCategoryShipping', // Controller name without 'Controller'
+            'visible' => true,
+            'parent_class_name' => 'AdminParentShipping', // Where to place it (e.g., under Customers)
+        ],
+    ];
     public function __construct()
     {
         $this->name = 'categoryshipping';
@@ -42,7 +53,7 @@ class CategoryShipping extends Module
         `name` varchar(255) NOT NULL,
         `machine_name` varchar(255) NOT NULL,
         `rate` int(11) NOT NULL,
-        `created_at` datetime NOT NULL,
+        `date_add` datetime NOT NULL,
         PRIMARY KEY (`id_data`)
         ) ENGINE='. _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
@@ -56,4 +67,15 @@ class CategoryShipping extends Module
         $query = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'category_shipping`';
         return Db::getInstance()->execute($query);
     }
+
+    public function getContent()
+    {
+        $output = '';
+
+        if (Tools::isSubmit('submitCategoryShipping')) {
+            $id_data = (int) Tools::getValue('id_data');
+        }
+    }
+
+
 }
